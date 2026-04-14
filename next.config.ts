@@ -2,12 +2,15 @@ import type { NextConfig } from 'next';
 
 // User's custom Next.js configuration
 const nextConfig: NextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   images: {
-    domains: ['cdn.example.com'],
-  },
-  experimental: {
-    optimizeCss: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.example.com',
+      },
+    ],
   },
 };
 
