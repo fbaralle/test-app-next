@@ -219,10 +219,13 @@ export default function HealthcheckToolbar() {
   const [error, setError] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
 
+  // Get the base path from environment (set at build time)
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
   useEffect(() => {
     async function fetchHealth() {
       try {
-        const res = await fetch("/api/healthcheck");
+        const res = await fetch(`${basePath}/api/healthcheck`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = (await res.json()) as HealthcheckResponse;
         setHealth(data);
