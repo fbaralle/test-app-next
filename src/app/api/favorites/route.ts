@@ -74,12 +74,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await db
-      .prepare(
-        "INSERT OR IGNORE INTO favorites (user_id, coin_id, coin_name, coin_symbol, coin_image, created_at) VALUES (?, ?, ?, ?, ?, ?)"
-      )
-      .bind(PUBLIC_USER, coin_id, coin_name || null, coin_symbol || null, coin_image || null, Date.now())
-      .run();
+    // Try new schema first, fall back to old schema if columns don't exist
+    try {
+      await db
+        .prepare(
+          "INSERT OR IGNORE INTO favorites (user_id, coin_id, coin_name, coin_symbol, coin_image, created_at) VALUES (?, ?, ?, ?, ?, ?)"
+        )
+        .bind(PUBLIC_USER, coin_id, coin_name || null, coin_symbol || null, coin_image || null, Date.now())
+        .run();
+    } catch {
+      // Fall back to old schema without metadata columns
+      await db
+        .prepare(
+          "INSERT OR IGNORE INTO favorites (user_id, coin_id, created_at) VALUES (?, ?, ?)"
+        )
+        .bind(PUBLIC_USER, coin_id, Date.now())
+        .run();
+    }
 
     return NextResponse.json({ success: true, coin_id });
   } catch (e) {
