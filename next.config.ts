@@ -1,18 +1,18 @@
 import type { NextConfig } from 'next';
 
-// Resolve mount path from either NEXT_PUBLIC_BASE_PATH or COSMIC_MOUNT_PATH (Webflow Cloud)
-// Ensure basePath starts with / if not empty (Next.js requirement)
-const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH || process.env.COSMIC_MOUNT_PATH || '';
-const basePath = rawBasePath && !rawBasePath.startsWith('/') ? `/${rawBasePath}` : rawBasePath;
+// Get mount path for client-side use (basePath is handled by Webflow Cloud builder)
+// Ensure it starts with / if not empty
+const rawMountPath = process.env.NEXT_PUBLIC_BASE_PATH || process.env.COSMIC_MOUNT_PATH || '';
+const mountPath = rawMountPath && !rawMountPath.startsWith('/') ? `/${rawMountPath}` : rawMountPath;
 
 // User's custom Next.js configuration
+// NOTE: basePath is set by Webflow Cloud builder, do not set it here
 const nextConfig: NextConfig = {
-  basePath,
   output: 'standalone',
   reactStrictMode: true,
-  // Expose basePath to client-side code
+  // Expose mount path to client-side code for API calls
   env: {
-    NEXT_PUBLIC_BASE_PATH: basePath,
+    NEXT_PUBLIC_BASE_PATH: mountPath,
   },
   images: {
     remotePatterns: [
