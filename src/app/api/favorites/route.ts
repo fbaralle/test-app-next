@@ -9,14 +9,25 @@ interface Favorite {
 }
 
 export async function GET(request: NextRequest) {
-  const { env } = await getCloudflareContext();
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("user_id") || "anonymous";
-
   try {
-    const { results } = await env.DB.prepare(
-      "SELECT * FROM favorites WHERE user_id = ? ORDER BY created_at DESC"
-    )
+    const ctx = await getCloudflareContext();
+    const env = ctx?.env as Record<string, unknown> | undefined;
+    const db = env?.DB as D1Database | undefined;
+
+    if (!db) {
+      return NextResponse.json(
+        { error: "Database binding not available" },
+        { status: 503 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get("user_id") || "anonymous";
+
+    const { results } = await db
+      .prepare(
+        "SELECT * FROM favorites WHERE user_id = ? ORDER BY created_at DESC"
+      )
       .bind(userId)
       .all<Favorite>();
 
@@ -30,10 +41,45 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { env } = await getCloudflareContext();
-
   try {
-    const body = (await request.json()) as { user_id?: string; coin_id?: string };
+    const ctx = await getCloudflareContext();
+    const env = ctx?.env as Record<string, unknown> | undefined;
+    const db = env?.DB as D1Database | undefined;
+
+    if (!db) {
+      return NextResponse.json(
+        { error: "Database binding not available" },
+        { status: 503 }
+      );
+    }
+
+    const body = (await request.json()) as {
+      user_id?: string;
+      coin_id?: string;
+      seed?: boolean;
+    };
+
+    // Handle seed request - add demo data
+    if (body.seed) {
+      const demoCoins = ["bitcoin", "ethereum", "solana", "cardano", "polkadot"];
+      const userId = body.user_id || "demo-user";
+
+      for (const coinId of demoCoins) {
+        await db
+          .prepare(
+            "INSERT OR IGNORE INTO favorites (user_id, coin_id, created_at) VALUES (?, ?, ?)"
+          )
+          .bind(userId, coinId, Date.now() - Math.random() * 86400000)
+          .run();
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Demo data seeded",
+        coins: demoCoins,
+      });
+    }
+
     const { user_id = "anonymous", coin_id } = body;
 
     if (!coin_id) {
@@ -43,9 +89,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await env.DB.prepare(
-      "INSERT OR IGNORE INTO favorites (user_id, coin_id, created_at) VALUES (?, ?, ?)"
-    )
+    await db
+      .prepare(
+        "INSERT OR IGNORE INTO favorites (user_id, coin_id, created_at) VALUES (?, ?, ?)"
+      )
       .bind(user_id, coin_id, Date.now())
       .run();
 
@@ -59,19 +106,31 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const { env } = await getCloudflareContext();
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("user_id") || "anonymous";
-  const coinId = searchParams.get("coin_id");
-
-  if (!coinId) {
-    return NextResponse.json({ error: "coin_id is required" }, { status: 400 });
-  }
-
   try {
-    await env.DB.prepare(
-      "DELETE FROM favorites WHERE user_id = ? AND coin_id = ?"
-    )
+    const ctx = await getCloudflareContext();
+    const env = ctx?.env as Record<string, unknown> | undefined;
+    const db = env?.DB as D1Database | undefined;
+
+    if (!db) {
+      return NextResponse.json(
+        { error: "Database binding not available" },
+        { status: 503 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get("user_id") || "anonymous";
+    const coinId = searchParams.get("coin_id");
+
+    if (!coinId) {
+      return NextResponse.json(
+        { error: "coin_id is required" },
+        { status: 400 }
+      );
+    }
+
+    await db
+      .prepare("DELETE FROM favorites WHERE user_id = ? AND coin_id = ?")
       .bind(userId, coinId)
       .run();
 
