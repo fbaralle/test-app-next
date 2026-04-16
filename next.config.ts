@@ -1,7 +1,9 @@
 import type { NextConfig } from 'next';
 
 // Resolve mount path from either NEXT_PUBLIC_BASE_PATH or COSMIC_MOUNT_PATH (Webflow Cloud)
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || process.env.COSMIC_MOUNT_PATH || '';
+// Ensure basePath starts with / if not empty (Next.js requirement)
+const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH || process.env.COSMIC_MOUNT_PATH || '';
+const basePath = rawBasePath && !rawBasePath.startsWith('/') ? `/${rawBasePath}` : rawBasePath;
 
 // User's custom Next.js configuration
 const nextConfig: NextConfig = {
