@@ -1,4 +1,5 @@
 import CryptoDashboard from "./components/CryptoDashboard";
+import FavoritesSection from "./components/FavoritesSection";
 
 export default function Home() {
   return (
@@ -14,7 +15,10 @@ export default function Home() {
           Live market data from CoinGecko
         </p>
       </header>
-      <main className="flex-1 px-4 pb-12">
+      <main className="flex-1 px-4 pb-12 space-y-6">
+        <div className="max-w-6xl mx-auto">
+          <FavoritesSection />
+        </div>
         <CryptoDashboard />
       </main>
       <footer className="border-t border-gray-200 dark:border-gray-700 bg-white/60 dark:bg-gray-900/60 backdrop-blur">

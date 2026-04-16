@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useFavorites, useAddFavorite, useRemoveFavorite } from "./FavoritesSection";
 
 interface Coin {
   id: string;
@@ -197,6 +198,28 @@ export default function CryptoDashboard() {
   const [refreshInterval, setRefreshInterval] = useState(30);
   const [countdown, setCountdown] = useState(0);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Favorites functionality
+  const { data: favorites = [] } = useFavorites();
+  const addFavorite = useAddFavorite();
+  const removeFavorite = useRemoveFavorite();
+  const favoriteIds = new Set(favorites.map((f) => f.coin_id));
+
+  const toggleFavorite = useCallback(
+    (coin: Coin) => {
+      if (favoriteIds.has(coin.id)) {
+        removeFavorite.mutate(coin.id);
+      } else {
+        addFavorite.mutate({
+          id: coin.id,
+          name: coin.name,
+          symbol: coin.symbol,
+          image: coin.image,
+        });
+      }
+    },
+    [favoriteIds, addFavorite, removeFavorite]
+  );
 
   const addToast = useCallback(
     (toast: { label: string; code: string; detail: string; type?: "error" | "info" }) => {
@@ -430,6 +453,9 @@ export default function CryptoDashboard() {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-left">
+                <th className="px-4 py-3 font-medium text-center w-12" title="Add to favorites">
+                  ★
+                </th>
                 <th
                   className="px-4 py-3 font-medium cursor-pointer hover:text-gray-900 dark:hover:text-white whitespace-nowrap"
                   onClick={() => handleSort("market_cap_rank")}
@@ -479,7 +505,7 @@ export default function CryptoDashboard() {
                       key={i}
                       className="border-t border-gray-100 dark:border-gray-800 animate-pulse"
                     >
-                      <td className="px-4 py-4" colSpan={8}>
+                      <td className="px-4 py-4" colSpan={9}>
                         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
                       </td>
                     </tr>
@@ -498,6 +524,22 @@ export default function CryptoDashboard() {
                           : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
                       }`}
                     >
+                      <td className="px-4 py-3 text-center">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(coin);
+                          }}
+                          className={`text-xl transition-colors ${
+                            favoriteIds.has(coin.id)
+                              ? "text-yellow-500 hover:text-yellow-600"
+                              : "text-gray-300 hover:text-yellow-400"
+                          }`}
+                          title={favoriteIds.has(coin.id) ? "Remove from favorites" : "Add to favorites"}
+                        >
+                          {favoriteIds.has(coin.id) ? "★" : "☆"}
+                        </button>
+                      </td>
                       <td className="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono">
                         {coin.market_cap_rank}
                       </td>
