@@ -6,7 +6,7 @@ const CACHE_TTL = 60; // 1 minute cache
 export async function GET(request: NextRequest) {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
     const kv = env?.SESSIONS as KVNamespace | undefined;
 
     if (!kv) {
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
     const kv = env?.SESSIONS as KVNamespace | undefined;
 
     if (!kv) {

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST() {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
 
     const results: Record<string, { success: boolean; message?: string; error?: string }> = {};
 

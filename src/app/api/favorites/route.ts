@@ -11,7 +11,7 @@ interface Favorite {
 export async function GET(request: NextRequest) {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
     const db = env?.DB as D1Database | undefined;
 
     if (!db) {
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
     const db = env?.DB as D1Database | undefined;
 
     if (!db) {
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
     const db = env?.DB as D1Database | undefined;
 
     if (!db) {

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
 
     // Try to find R2 bucket - it might have different binding names
     const r2 = (env?.WEBFLOW_CLOUD_MEDIA ??
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const ctx = await getCloudflareContext();
-    const env = ctx?.env as Record<string, unknown> | undefined;
+    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
 
     // Try to find R2 bucket
     const r2 = (env?.WEBFLOW_CLOUD_MEDIA ??
