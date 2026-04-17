@@ -11,15 +11,16 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "favorites-db",
-      "database_id": "placeholder"
+      "database_name": "project-updates-db",
+      "database_id": "local",
+      "migrations_dir": "drizzle"
     }
   ],
   "kv_namespaces": [
-    { "binding": "SESSIONS", "id": "placeholder-sessions" },
-    { "binding": "FLAGS", "id": "placeholder-flags" }
+    { "binding": "SESSIONS", "id": "local" },
+    { "binding": "FLAGS", "id": "local-flags" }
   ],
   "r2_buckets": [
-    { "binding": "WEBFLOW_CLOUD_MEDIA", "bucket_name": "media-storage" }
+    { "binding": "WEBFLOW_CLOUD_MEDIA", "bucket_name": "fake" }
   ]
 }
