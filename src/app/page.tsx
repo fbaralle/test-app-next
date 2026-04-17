@@ -1,5 +1,8 @@
 import CryptoDashboard from "./components/CryptoDashboard";
 import FavoritesSection from "./components/FavoritesSection";
+import FeatureFlagsSection from "./components/FeatureFlagsSection";
+import PageViewsSection from "./components/PageViewsSection";
+import ExportsSection from "./components/ExportsSection";
 
 export default function Home() {
   return (
@@ -16,8 +19,19 @@ export default function Home() {
         </p>
       </header>
       <main className="flex-1 px-4 pb-12 space-y-6">
+        {/* Cloudflare Bindings Demo Section */}
         <div className="max-w-6xl mx-auto">
-          <FavoritesSection />
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+            Cloudflare Bindings Demo
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <FavoritesSection />
+            <PageViewsSection />
+            <FeatureFlagsSection />
+          </div>
+          <div className="mt-4">
+            <ExportsSection />
+          </div>
         </div>
         <CryptoDashboard />
       </main>
