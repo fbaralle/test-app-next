@@ -16,7 +16,7 @@ interface FavoritesResponse {
   error?: string;
 }
 
-const basePath = process.env.APP_PUBLIC_API_PATH || "";
+const basePath = process.env.__NEXT_ROUTER_BASEPATH || "";
 
 async function fetchFavorites(): Promise<Favorite[]> {
   const res = await fetch(`${basePath}/api/favorites`);

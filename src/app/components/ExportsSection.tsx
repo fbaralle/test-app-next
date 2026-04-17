@@ -20,7 +20,7 @@ interface ExportResult {
   url: string;
 }
 
-const basePath = process.env.APP_PUBLIC_API_PATH || "";
+const basePath = process.env.__NEXT_ROUTER_BASEPATH || "";
 
 async function fetchExports(): Promise<Export[]> {
   const res = await fetch(`${basePath}/api/export`);

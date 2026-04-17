@@ -219,8 +219,8 @@ export default function HealthcheckToolbar() {
   const [error, setError] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Get the base path from environment (set at build time)
-  const basePath = process.env.APP_PUBLIC_API_PATH || "";
+  // Get the base path from Next.js config (set at build time)
+  const basePath = process.env.__NEXT_ROUTER_BASEPATH || "";
 
   useEffect(() => {
     async function fetchHealth() {

@@ -19,7 +19,7 @@ const FLAG_LABELS: Record<string, { label: string; description: string }> = {
   experimental_features: { label: "Experimental", description: "Enable experimental features" },
 };
 
-const basePath = process.env.APP_PUBLIC_API_PATH || "";
+const basePath = process.env.__NEXT_ROUTER_BASEPATH || "";
 
 async function fetchFlags(): Promise<FeatureFlags> {
   const res = await fetch(`${basePath}/api/flags`);
