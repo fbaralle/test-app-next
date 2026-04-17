@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   env: {
-    PUBLIC_API_MOUNT_PATH: process.env.PUBLIC_API_MOUNT_PATH || ''
+    APP_PUBLIC_API_PATH: process.env.APP_PUBLIC_API_PATH || ''
   },
   images: {
     remotePatterns: [
