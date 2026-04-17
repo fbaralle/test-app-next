@@ -14,5 +14,12 @@
       "database_id": "0",
       "migrations_dir": "drizzle"
     }
+  ],
+  "kv_namespaces": [
+    { "binding": "SESSIONS", "id": "local" },
+    { "binding": "FLAGS", "id": "local-flags" }
+  ],
+  "r2_buckets": [
+    { "binding": "MEDIA", "bucket_name": "media" }
   ]
 }
