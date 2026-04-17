@@ -20,6 +20,6 @@
     { "binding": "FLAGS", "id": "placeholder-flags" }
   ],
   "r2_buckets": [
-    { "binding": "WEBFLOW_CLOUD_MEDIA", "bucket_name": "Media" }
+    { "binding": "WEBFLOW_CLOUD_MEDIA", "bucket_name": "media-storage" }
   ]
 }
