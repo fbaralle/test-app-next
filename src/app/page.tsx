@@ -3,6 +3,7 @@ import FavoritesSection from "./components/FavoritesSection";
 import FeatureFlagsSection from "./components/FeatureFlagsSection";
 import PageViewsSection from "./components/PageViewsSection";
 import ExportsSection from "./components/ExportsSection";
+import EnvDebugSection from "./components/EnvDebugSection";
 
 export default function Home() {
   return (
@@ -32,10 +33,11 @@ export default function Home() {
           <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
             Cloudflare Bindings
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <PageViewsSection compact />
             <FeatureFlagsSection compact />
             <ExportsSection compact />
+            <EnvDebugSection compact />
           </div>
         </div>
       </main>
