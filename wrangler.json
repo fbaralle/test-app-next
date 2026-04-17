@@ -1,9 +1,8 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
   "name": "test-app-next",
   "compatibility_date": "2025-04-15",
   "compatibility_flags": ["nodejs_compat"],
-  "main": ".open-next/worker.js",
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
@@ -11,15 +10,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "project-updates-db",
-      "database_id": "local"
+      "database_name": "db",
+      "database_id": "0"
     }
-  ],
-  "kv_namespaces": [
-    { "binding": "SESSIONS", "id": "local" },
-    { "binding": "FLAGS", "id": "local-flags" }
-  ],
-  "r2_buckets": [
-    { "binding": "WEBFLOW_CLOUD_MEDIA", "bucket_name": "fake" }
   ]
 }
