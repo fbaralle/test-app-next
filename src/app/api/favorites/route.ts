@@ -15,13 +15,18 @@ const PUBLIC_USER = "public";
 
 export async function GET(request: NextRequest) {
   try {
-    const ctx = await getCloudflareContext();
-    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
-    const db = env?.DB as D1Database | undefined;
+    let db: D1Database | undefined;
+    try {
+      const ctx = await getCloudflareContext();
+      const env = ctx?.env as unknown as Record<string, unknown> | undefined;
+      db = env?.DB as D1Database | undefined;
+    } catch {
+      // getCloudflareContext throws when not running in wrangler
+    }
 
     if (!db) {
       return NextResponse.json(
-        { error: "Database binding not available" },
+        { error: "Database binding not available", favorites: [] },
         { status: 503 }
       );
     }
@@ -47,9 +52,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const ctx = await getCloudflareContext();
-    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
-    const db = env?.DB as D1Database | undefined;
+    let db: D1Database | undefined;
+    try {
+      const ctx = await getCloudflareContext();
+      const env = ctx?.env as unknown as Record<string, unknown> | undefined;
+      db = env?.DB as D1Database | undefined;
+    } catch {
+      // getCloudflareContext throws when not running in wrangler
+    }
 
     if (!db) {
       return NextResponse.json(
@@ -103,9 +113,14 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const ctx = await getCloudflareContext();
-    const env = ctx?.env as unknown as Record<string, unknown> | undefined;
-    const db = env?.DB as D1Database | undefined;
+    let db: D1Database | undefined;
+    try {
+      const ctx = await getCloudflareContext();
+      const env = ctx?.env as unknown as Record<string, unknown> | undefined;
+      db = env?.DB as D1Database | undefined;
+    } catch {
+      // getCloudflareContext throws when not running in wrangler
+    }
 
     if (!db) {
       return NextResponse.json(

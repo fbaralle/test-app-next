@@ -19,21 +19,25 @@ export default function Home() {
         </p>
       </header>
       <main className="flex-1 px-4 pb-12 space-y-6">
-        {/* Cloudflare Bindings Demo Section */}
+        {/* Favorites Section (D1) */}
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-            Cloudflare Bindings Demo
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <FavoritesSection />
-            <PageViewsSection />
-            <FeatureFlagsSection />
-          </div>
-          <div className="mt-4">
-            <ExportsSection />
+          <FavoritesSection />
+        </div>
+
+        {/* Crypto Dashboard */}
+        <CryptoDashboard />
+
+        {/* Additional Cloudflare Bindings Demo */}
+        <div className="max-w-6xl mx-auto">
+          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+            Cloudflare Bindings
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <PageViewsSection compact />
+            <FeatureFlagsSection compact />
+            <ExportsSection compact />
           </div>
         </div>
-        <CryptoDashboard />
       </main>
       <footer className="border-t border-gray-200 dark:border-gray-700 bg-white/60 dark:bg-gray-900/60 backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500 dark:text-gray-400">

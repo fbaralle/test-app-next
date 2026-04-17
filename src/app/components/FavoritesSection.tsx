@@ -20,8 +20,12 @@ const basePath = process.env.NEXT_PUBLIC_API_MOUNT_PATH || "";
 
 async function fetchFavorites(): Promise<Favorite[]> {
   const res = await fetch(`${basePath}/api/favorites`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = (await res.json()) as FavoritesResponse;
+  // Return empty array for 503 (binding not available) - show as "no favorites" not error
+  if (res.status === 503) {
+    return data.favorites || [];
+  }
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   if (data.error) throw new Error(data.error);
   return data.favorites;
 }
@@ -38,6 +42,7 @@ export function useFavorites() {
     queryKey: ["favorites"],
     queryFn: fetchFavorites,
     staleTime: 10000,
+    retry: false,
   });
 }
 

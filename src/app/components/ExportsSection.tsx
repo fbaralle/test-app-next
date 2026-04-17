@@ -44,21 +44,23 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleString();
+interface Props {
+  compact?: boolean;
 }
 
-export default function ExportsSection() {
+export default function ExportsSection({ compact }: Props) {
   const queryClient = useQueryClient();
   const { data: favorites } = useFavorites();
-  const { data: exports = [], isLoading, error, refetch } = useQuery({
+  const { data: exports = [], isLoading, error } = useQuery({
     queryKey: ["exports"],
     queryFn: fetchExports,
     staleTime: 30000,
+    retry: false,
   });
 
   const exportMutation = useMutation({
     mutationFn: createExport,
+    retry: false,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exports"] });
     },
@@ -75,13 +77,13 @@ export default function ExportsSection() {
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+      <div className={`bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 ${compact ? "p-3" : "p-6"}`}>
+        <h3 className={`font-bold text-gray-900 dark:text-white flex items-center gap-2 ${compact ? "text-sm mb-2" : "text-lg mb-4"}`}>
           <span>📦</span> R2 Exports
         </h3>
-        <div className="animate-pulse space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+        <div className="animate-pulse space-y-2">
+          {[1, 2].map((i) => (
+            <div key={i} className={`bg-gray-200 dark:bg-gray-700 rounded ${compact ? "h-6" : "h-12"}`} />
           ))}
         </div>
       </div>
@@ -90,13 +92,50 @@ export default function ExportsSection() {
 
   if (error) {
     return (
-      <div className="bg-white dark:bg-gray-900 rounded-xl border border-red-200 dark:border-red-800 p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+      <div className={`bg-white dark:bg-gray-900 rounded-lg border border-red-200 dark:border-red-800 ${compact ? "p-3" : "p-6"}`}>
+        <h3 className={`font-bold text-gray-900 dark:text-white flex items-center gap-2 ${compact ? "text-sm mb-1" : "text-lg mb-2"}`}>
           <span>📦</span> R2 Exports
         </h3>
-        <p className="text-sm text-red-600 dark:text-red-400">
-          {error instanceof Error ? error.message : "Failed to load exports"}
+        <p className={`text-red-600 dark:text-red-400 ${compact ? "text-xs" : "text-sm"}`}>
+          {error instanceof Error ? error.message : "Failed"}
         </p>
+      </div>
+    );
+  }
+
+  if (compact) {
+    return (
+      <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span>📦</span> Exports
+            <span className="text-xs font-normal text-gray-400">(R2)</span>
+          </h3>
+          <button
+            onClick={handleExportFavorites}
+            disabled={exportMutation.isPending || !favorites?.length}
+            className="px-2 py-1 text-xs font-medium bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {exportMutation.isPending ? "..." : "Export"}
+          </button>
+        </div>
+        <div className="space-y-1">
+          {exports.length === 0 ? (
+            <p className="text-xs text-gray-500">No exports yet</p>
+          ) : (
+            exports.slice(0, 2).map((exp) => (
+              <div key={exp.key} className="flex items-center justify-between text-xs">
+                <span className="text-gray-700 dark:text-gray-300 truncate flex-1">
+                  {exp.key.replace("exports/", "").slice(0, 15)}...
+                </span>
+                <span className="text-gray-400 ml-2">{formatBytes(exp.size)}</span>
+              </div>
+            ))
+          )}
+          {exports.length > 2 && (
+            <p className="text-xs text-gray-400">+{exports.length - 2} more</p>
+          )}
+        </div>
       </div>
     );
   }
@@ -107,21 +146,13 @@ export default function ExportsSection() {
         <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <span>📦</span> R2 Exports
         </h3>
-        <div className="flex gap-2">
-          <button
-            onClick={handleExportFavorites}
-            disabled={exportMutation.isPending || !favorites?.length}
-            className="px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {exportMutation.isPending ? "Exporting..." : "Export Favorites"}
-          </button>
-          <button
-            onClick={() => refetch()}
-            className="px-3 py-1.5 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-          >
-            Refresh
-          </button>
-        </div>
+        <button
+          onClick={handleExportFavorites}
+          disabled={exportMutation.isPending || !favorites?.length}
+          className="px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {exportMutation.isPending ? "Exporting..." : "Export Favorites"}
+        </button>
       </div>
 
       {exportMutation.isSuccess && (
@@ -139,16 +170,13 @@ export default function ExportsSection() {
       ) : (
         <div className="space-y-2">
           {exports.map((exp) => (
-            <div
-              key={exp.key}
-              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-            >
+            <div key={exp.key} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                   {exp.key.replace("exports/", "")}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatDate(exp.uploaded)} • {formatBytes(exp.size)}
+                  {new Date(exp.uploaded).toLocaleString()} • {formatBytes(exp.size)}
                 </p>
               </div>
               <a
