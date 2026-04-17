@@ -220,7 +220,7 @@ export default function HealthcheckToolbar() {
   const [isExpanded, setIsExpanded] = useState(true);
 
   // Get the base path from environment (set at build time)
-  const basePath = process.env.NEXT_PUBLIC_API_MOUNT_PATH || "";
+  const basePath = process.env.PUBLIC_API_MOUNT_PATH || "";
 
   useEffect(() => {
     async function fetchHealth() {

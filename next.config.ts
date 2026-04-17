@@ -5,6 +5,9 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  env: {
+    PUBLIC_API_MOUNT_PATH: process.env.PUBLIC_API_MOUNT_PATH || ''
+  },
   images: {
     remotePatterns: [
       {
